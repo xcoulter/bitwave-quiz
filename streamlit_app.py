@@ -40,10 +40,23 @@ css = '''
     margin: 0;
 }
     header {visibility: hidden;}
+    .question-box {
+        border: 1px solid white;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .option-box {
+        border: 1px solid white;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        margin: 0.3rem 0;
+    }
 </style>
 '''
 st.markdown(css, unsafe_allow_html=True)
-st.title("🧠 Bitwave Basics Certification Quiz")
+st.image("https://uploads-ssl.webflow.com/6414c1b20a8bb758e308c685/6414c1b20a8bb716eb08c69d_Bitwave_Logo.svg", width=160)
+st.markdown("# Bitwave Basics Certification Quiz")
 
 if "user_info_submitted" not in st.session_state:
     st.session_state.user_info_submitted = False
@@ -112,12 +125,18 @@ if st.session_state.user_info_submitted and "start_time" in st.session_state and
 if st.session_state.user_info_submitted and not st.session_state.submitted:
     st.write("Please answer all questions below:")
     for i, q in enumerate(quiz_data):
-        st.markdown(f"### Q{i + 1}: {q['question']}")
-        user_answers = []
-        for j, option in enumerate(q["options"]):
-            key = f"q{i}_opt{j}"
-            if st.checkbox(option, key=key):
-                user_answers.append(j)
+        with st.container():
+            st.markdown(f'<div class="question-box">', unsafe_allow_html=True)
+            st.markdown(f"### Q{i + 1}: {q['question']}")
+            user_answers = []
+            for j, option in enumerate(q["options"]):
+                key = f"q{i}_opt{j}"
+                with st.container():
+                    st.markdown('<div class="option-box">', unsafe_allow_html=True)
+                    if st.checkbox(option, key=key):
+                        user_answers.append(j)
+                    st.markdown('</div>', unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
         st.session_state.responses[i] = user_answers
     st.session_state.quiz_rendered = True
     if st.button("Submit Quiz"):
