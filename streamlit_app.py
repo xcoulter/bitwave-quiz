@@ -491,6 +491,67 @@ quiz_data = [
         ],
         "correct": [0, 1, 3],
         "type": "multi"
+    },
+    {
+        "question": "[SINGLE] You reconcile transactions using the 'mark as reconciled' action in the transaction screen?",
+        "options": ["True", "False"],
+        "correct": [0],
+        "type": "single"
+    },
+    {
+        "question": "[SINGLE] How would I book a gain/loss over a particular period in my ERP?",
+        "options": [
+            "You mark all trades as reconciled and generate a trade summary report.",
+            "You run the gain/loss report and then Bitwave creates and sync a journal entry to your ERP.",
+            "Gain/loss cannot be booked in your ERP.",
+            "You manually adjust wallet balances at the end of each period."
+        ],
+        "correct": [1],
+        "type": "single"
+    },
+    {
+        "question": "[SINGLE] How would you push a trade to your ERP?",
+        "options": [
+            "You categorize it as an invoice and sync it.",
+            "You need to do this manually by running a rolled up journal entry report periodically and book it in your ERP in a single journal entry.",
+            "Trades are automatically synced by default.",
+            "Use the rules engine to apply trade logic."
+        ],
+        "correct": [1],
+        "type": "single"
+    },
+    {
+        "question": "[SINGLE] When should the trade categorization type be used?",
+        "options": [
+            "When receiving payment for an invoice.",
+            "When booking a loss.",
+            "When swapping one digital asset for another.",
+            "When exporting a journal entry."
+        ],
+        "correct": [2],
+        "type": "single"
+    },
+    {
+        "question": "[SINGLE] What do you need to check if gain/loss runner shows zero values?",
+        "options": [
+            "Ensure all transactions are categorized and priced.",
+            "Your browser cache is cleared.",
+            "Contact your tax advisor.",
+            "Disable reconciliation feature."
+        ],
+        "correct": [0],
+        "type": "single"
+    },
+    {
+        "question": "[MULTI] When should you avoid using the ignore function?",
+        "options": [
+            "For valid trades",
+            "For reconciled journal entries",
+            "For internal transfers",
+            "For irrelevant spam airdrops"
+        ],
+        "correct": [0, 1, 2],
+        "type": "multi"
     }
 ]
 
