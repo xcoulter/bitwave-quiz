@@ -46,12 +46,7 @@ css = '''
         padding: 1rem;
         margin-bottom: 1.5rem;
     }
-    .option-box {
-        border: 1px solid white;
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
-        margin: 0.3rem 0;
-    }
+    
 </style>
 '''
 st.markdown(css, unsafe_allow_html=True)
