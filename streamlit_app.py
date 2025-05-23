@@ -23,7 +23,7 @@ st.set_page_config(page_title="Bitwave Basics Certification Quiz", layout="wide"
 # ===== Timer at Top Right =====
 css = '''
 <style>
-body {
+.stApp {
     background: linear-gradient(135deg, #051C2C 0%, #0B324B 100%) !important;
     background-attachment: fixed;
     color: white;
