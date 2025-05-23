@@ -32,7 +32,7 @@ quiz_data = [
         ],
         "correct": [3],
         "type": "single"
-    }
+    },
     {
         "question": "[SINGLE] In order to add a new user to Bitwave, which of the following do you need from the new user?",
         "options": ["Phone number", "Twitter handle", "Email address", "Name"],
