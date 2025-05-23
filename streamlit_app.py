@@ -1,10 +1,11 @@
 # Bitwave Certification Quiz App - Streamlit Version
 
-This Python script builds an interactive quiz application using Streamlit. It includes:
-- 60-question multiple-choice quiz
-- 45-second timer per question
-- Scoring logic
-- User result tracking
+# This Python script builds an interactive quiz application using Streamlit. It includes:
+# - 60-question multiple-choice quiz
+# - 45-second timer per question
+# - Scoring logic
+# - User result tracking
+
 
 ```python
 import streamlit as st
