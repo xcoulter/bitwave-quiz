@@ -46,6 +46,7 @@ if not st.session_state.user_info_submitted:
             st.session_state.email = email
             st.session_state.company = company
             st.session_state.user_info_submitted = True
+            st.rerun()
 
 # ========== 2. Initialize Quiz State ==========
 if st.session_state.user_info_submitted and "start_time" not in st.session_state:
