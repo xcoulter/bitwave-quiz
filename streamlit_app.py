@@ -41,7 +41,7 @@ css = '''
 }
     header {visibility: hidden;}
     .question-box {
-        border: 1px solid white;
+        border: 2px solid white;
         border-radius: 12px;
         padding: 1rem;
         margin-bottom: 1.5rem;
@@ -127,15 +127,12 @@ if st.session_state.user_info_submitted and not st.session_state.submitted:
     for i, q in enumerate(quiz_data):
         with st.container():
             st.markdown(f'<div class="question-box">', unsafe_allow_html=True)
-            st.markdown(f"### Q{i + 1}: {q['question']}")
+            st.markdown(f"<div class='question-text'><strong>Q{i + 1}:</strong> {q['question']}</div>", unsafe_allow_html=True)
             user_answers = []
             for j, option in enumerate(q["options"]):
                 key = f"q{i}_opt{j}"
-                with st.container():
-                    st.markdown('<div class="option-box">', unsafe_allow_html=True)
-                    if st.checkbox(option, key=key):
-                        user_answers.append(j)
-                    st.markdown('</div>', unsafe_allow_html=True)
+                if st.checkbox(option, key=key):
+                    user_answers.append(j)
             st.markdown('</div>', unsafe_allow_html=True)
         st.session_state.responses[i] = user_answers
     st.session_state.quiz_rendered = True
