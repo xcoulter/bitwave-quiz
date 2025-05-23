@@ -75,8 +75,10 @@ def create_pdf(summary_text):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
-    for line in summary_text.split("\n"):
-        pdf.cell(200, 10, txt=line, ln=True)
+    for line in summary_text.split("
+"):
+        safe_line = line.encode("latin-1", "replace").decode("latin-1")
+        pdf.cell(200, 10, txt=safe_line, ln=True)
     pdf_file = "/tmp/bitwave_results.pdf"
     pdf.output(pdf_file)
     return pdf_file
