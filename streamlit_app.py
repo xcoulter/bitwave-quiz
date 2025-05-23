@@ -50,7 +50,6 @@ if not st.session_state.user_info_submitted:
 
 # ========== 2. Initialize Quiz State ==========
 if st.session_state.user_info_submitted and "start_time" not in st.session_state:
-    st.session_state.start_time = time.time()
     st.session_state.responses = [{} for _ in quiz_data]
     st.session_state.submitted = False
     st.session_state.show_results = False
@@ -63,7 +62,7 @@ if "start_time" not in st.session_state:
     st.session_state.show_results = False
 
 # ========== 3. Timer ==========
-if st.session_state.user_info_submitted:
+if st.session_state.user_info_submitted and "start_time" in st.session_state and not st.session_state.submitted:
     total_quiz_duration = 90 * 60
     elapsed = time.time() - st.session_state.start_time
     remaining = int(total_quiz_duration - elapsed)
@@ -73,7 +72,10 @@ if st.session_state.user_info_submitted:
         st.session_state.submitted = True
         st.session_state.show_results = True
 
-    st.sidebar.write(f"🕒 Time Left: {remaining // 60}m {remaining % 60}s")
+    mins, secs = divmod(remaining, 60)
+    st.sidebar.markdown(f"🕒 Time Left: **{mins:02}:{secs:02}**")
+    time.sleep(1)
+    st.experimental_rerun()
 
 # ========== 4. Quiz Form ==========
 if st.session_state.user_info_submitted and not st.session_state.submitted:
@@ -86,8 +88,7 @@ if st.session_state.user_info_submitted and not st.session_state.submitted:
             if st.checkbox(option, key=key):
                 user_answers.append(j)
         st.session_state.responses[i] = user_answers
-
-if st.button("Submit Quiz"):
+    if st.button("Submit Quiz"):
     st.session_state.submitted = True
     st.session_state.show_results = True
 
