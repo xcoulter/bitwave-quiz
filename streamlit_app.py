@@ -34,6 +34,7 @@ css = '''
     padding: 0;
     margin: 0;
 }
+    header {visibility: hidden;}
 </style>
 '''
 st.markdown(css, unsafe_allow_html=True)
