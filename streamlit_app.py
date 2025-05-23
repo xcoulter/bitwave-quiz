@@ -134,6 +134,11 @@ if st.session_state.user_info_submitted and not st.session_state.submitted:
                 if st.checkbox(option, key=key):
                     user_answers.append(j)
             st.markdown('</div>', unsafe_allow_html=True)
+        st.session_state.responses[i] = user_answers            for j, option in enumerate(q["options"]):
+                key = f"q{i}_opt{j}"
+                if st.checkbox(option, key=key):
+                    user_answers.append(j)
+            st.markdown('</div>', unsafe_allow_html=True)
         st.session_state.responses[i] = user_answers
     st.session_state.quiz_rendered = True
     if st.button("Submit Quiz"):
