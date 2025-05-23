@@ -76,9 +76,9 @@ if st.session_state.user_info_submitted and "start_time" in st.session_state and
     mins, secs = divmod(remaining, 60)
     st.sidebar.markdown(f"🕒 Time Left: **{mins:02}:{secs:02}**")
   
-    if "start_time" in st.session_state and not st.session_state.submitted:
-        time.sleep(1)
-        st.rerun()
+    if "start_time" in st.session_state and not st.session_state.submitted and "quiz_rendered" in st.session_state:
+    time.sleep(1)
+    st.rerun()
 
 # ========== 4. Quiz Form ==========
 if st.session_state.user_info_submitted and not st.session_state.submitted:
@@ -91,6 +91,7 @@ if st.session_state.user_info_submitted and not st.session_state.submitted:
             if st.checkbox(option, key=key):
                 user_answers.append(j)
         st.session_state.responses[i] = user_answers
+    st.session_state.quiz_rendered = True
     if st.button("Submit Quiz"):
         st.session_state.submitted = True
         st.session_state.show_results = True
