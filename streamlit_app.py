@@ -10,14 +10,46 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 import os
-
-# ========== 1. Quiz Data ==========
+import csv
+from datetime import datetime
 from quiz_data import quiz_data
 
-# ========== 2. Initialization ==========
+ATTEMPT_LOG = "attempts_log.csv"
+
+# ========== 1. Pre-Quiz User Info ==========
 st.set_page_config(page_title="Bitwave Basics Certification Quiz", layout="wide")
 st.title("🧠 Bitwave Basics Certification Quiz")
 
+if "user_info_submitted" not in st.session_state:
+    st.session_state.user_info_submitted = False
+
+if not st.session_state.user_info_submitted:
+    st.subheader("Before you begin, please enter your details:")
+    name = st.text_input("Full Name")
+    email = st.text_input("Email Address")
+    company = st.text_input("Company")
+
+    def get_attempts(email):
+        try:
+            with open(ATTEMPT_LOG, newline="") as f:
+                return sum(1 for row in csv.reader(f) if row and row[0] == email)
+        except FileNotFoundError:
+            return 0
+
+    if st.button("Start Quiz"):
+        if not name or not email or not company:
+            st.warning("Please fill in all fields to begin.")
+        elif get_attempts(email) >= 3:
+            st.error("❌ You have reached the maximum of 3 quiz attempts. Contact support for access.")
+        else:
+            st.session_state.name = name
+            st.session_state.email = email
+            st.session_state.company = company
+            st.session_state.user_info_submitted = True
+            st.experimental_rerun()
+    st.stop()
+
+# ========== 2. Initialize Quiz State ==========
 if "start_time" not in st.session_state:
     st.session_state.start_time = time.time()
     st.session_state.responses = [{} for _ in quiz_data]
@@ -83,10 +115,10 @@ def create_pdf(summary_text):
     return pdf_file
 
 def send_email_with_pdf(pdf_path, score):
-    sender = "your_email@example.com"  # Replace with your SMTP sender email
-    receiver = "c.xeres.coulter@bitwave.io"
+    sender = "your_email@example.com"
+    receiver = st.session_state.email
     subject = "Bitwave Quiz Submission"
-    body = f"User completed the quiz with a score of {score}/60. See attached for details."
+    body = f"{st.session_state.name} from {st.session_state.company} completed the quiz with a score of {score}/60. See attached."
 
     msg = MIMEMultipart()
     msg["From"] = sender
@@ -101,7 +133,7 @@ def send_email_with_pdf(pdf_path, score):
         part.add_header("Content-Disposition", f"attachment; filename= results.pdf")
         msg.attach(part)
 
-    with smtplib.SMTP(os.getenv("SMTP_HOST"), int(os.getenv("SMTP_PORT", 587))) as server:  # Replace smtp.example.com
+    with smtplib.SMTP(os.getenv("SMTP_HOST"), int(os.getenv("SMTP_PORT", 587))) as server:
         server.starttls()
         server.login("your_username", "your_password")
         server.send_message(msg)
@@ -126,9 +158,20 @@ if st.session_state.show_results:
         href = f'<a href="data:application/octet-stream;base64,{b64}" download="bitwave_results.pdf">📄 Download PDF of Results</a>'
         st.markdown(href, unsafe_allow_html=True)
 
+    # Log the attempt
+    with open(ATTEMPT_LOG, "a", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            st.session_state.email,
+            st.session_state.name,
+            st.session_state.company,
+            datetime.now().strftime("%Y-%m-%d %H:%M"),
+            score
+        ])
+
     try:
         send_email_with_pdf(pdf_path, score)
-        st.info("📧 Results emailed to c.xeres.coulter@bitwave.io")
+        st.info(f"📧 Results emailed to {st.session_state.email}")
     except:
         st.warning("⚠️ Email not sent. Check SMTP config.")
 
