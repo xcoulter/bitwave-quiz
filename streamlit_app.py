@@ -50,16 +50,12 @@ if not st.session_state.user_info_submitted:
 
 # ========== 2. Initialize Quiz State ==========
 if st.session_state.user_info_submitted and "start_time" not in st.session_state:
-    st.session_state.responses = [{} for _ in quiz_data]
-    st.session_state.submitted = False
-    st.session_state.show_results = False
-
-
-if "start_time" not in st.session_state:
     st.session_state.start_time = time.time()
     st.session_state.responses = [{} for _ in quiz_data]
     st.session_state.submitted = False
     st.session_state.show_results = False
+
+
 
 # ========== 3. Timer ==========
 if st.session_state.user_info_submitted and "start_time" in st.session_state and not st.session_state.submitted:
@@ -187,4 +183,4 @@ if st.session_state.show_results:
     if st.button("Restart Quiz"):
         for key in list(st.session_state.keys()):
             del st.session_state[key]
-        st.experimental_rerun()
+        st.rerun()
