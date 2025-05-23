@@ -96,9 +96,9 @@ if st.session_state.user_info_submitted and "start_time" in st.session_state and
     st.markdown(f'<div class="timer-box">Time Left: {mins:02}:{secs:02}</div>', unsafe_allow_html=True)
   
     if (
-    st.session_state.get("quiz_rendered")
-    and not st.session_state.submitted
-    and not st.session_state.get("show_results", False)
+        st.session_state.get("quiz_rendered")
+        and not st.session_state.submitted
+        and not st.session_state.get("show_results", False)
 ):
     st_autorefresh(interval=1000, key="quiz_timer_refresh")
 
