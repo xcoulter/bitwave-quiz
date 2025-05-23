@@ -76,8 +76,8 @@ if st.session_state.user_info_submitted and "start_time" in st.session_state and
     st.sidebar.markdown(f"🕒 Time Left: **{mins:02}:{secs:02}**")
   
     if "start_time" in st.session_state and not st.session_state.submitted:
-            time.sleep(1)
-            st.rerun()
+        time.sleep(1)
+        st.rerun()
 
 # ========== 4. Quiz Form ==========
 if st.session_state.user_info_submitted and not st.session_state.submitted:
