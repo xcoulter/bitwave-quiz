@@ -49,6 +49,13 @@ if not st.session_state.user_info_submitted:
             st.stop()
 
 # ========== 2. Initialize Quiz State ==========
+if st.session_state.user_info_submitted and "start_time" not in st.session_state:
+    st.session_state.start_time = time.time()
+    st.session_state.responses = [{} for _ in quiz_data]
+    st.session_state.submitted = False
+    st.session_state.show_results = False
+
+
 if "start_time" not in st.session_state:
     st.session_state.start_time = time.time()
     st.session_state.responses = [{} for _ in quiz_data]
@@ -56,16 +63,17 @@ if "start_time" not in st.session_state:
     st.session_state.show_results = False
 
 # ========== 3. Timer ==========
-total_quiz_duration = 90 * 60
-elapsed = time.time() - st.session_state.start_time
-remaining = int(total_quiz_duration - elapsed)
+if st.session_state.user_info_submitted:
+    total_quiz_duration = 90 * 60
+    elapsed = time.time() - st.session_state.start_time
+    remaining = int(total_quiz_duration - elapsed)
 
-if remaining <= 0:
-    st.warning("⏰ Time's up! Auto-submitting.")
-    st.session_state.submitted = True
-    st.session_state.show_results = True
+    if remaining <= 0:
+        st.warning("⏰ Time's up! Auto-submitting.")
+        st.session_state.submitted = True
+        st.session_state.show_results = True
 
-st.sidebar.write(f"🕒 Time Left: {remaining // 60}m {remaining % 60}s")
+    st.sidebar.write(f"🕒 Time Left: {remaining // 60}m {remaining % 60}s")
 
 # ========== 4. Quiz Form ==========
 if st.session_state.user_info_submitted and not st.session_state.submitted:
