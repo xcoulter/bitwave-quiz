@@ -392,6 +392,105 @@ quiz_data = [
         "options": ["True", "False"],
         "correct": [1],
         "type": "single"
+    },
+    {
+        "question": "[SINGLE] When should the ignore transaction function be used?",
+        "options": [
+            "To permanently delete a transaction.",
+            "To hide a transaction from reports without deleting it.",
+            "To reverse a previously confirmed transaction.",
+            "To sync a transaction to the ERP without categorization."
+        ],
+        "correct": [1],
+        "type": "single"
+    },
+    {
+        "question": "[MULTI] Which reports are needed for EOM reconciliation?",
+        "options": [
+            "Wallet Balance Report",
+            "Gain/Loss Report",
+            "Journal Entry Export",
+            "Transaction Summary Report"
+        ],
+        "correct": [0, 2],
+        "type": "multi"
+    },
+    {
+        "question": "[SINGLE] Where do you go in Bitwave to perform the 'confirmations'?",
+        "options": [
+            "Wallet Management",
+            "Transaction Explorer",
+            "Reports Tab",
+            "Reconciliation Table"
+        ],
+        "correct": [3],
+        "type": "single"
+    },
+    {
+        "question": "[MULTI] Which reports can be found in the reports tab?",
+        "options": [
+            "Wallet Balance Report",
+            "Gain/Loss Report",
+            "Transaction Audit Trail",
+            "Reconciliation Summary"
+        ],
+        "correct": [0, 1, 2, 3],
+        "type": "multi"
+    },
+    {
+        "question": "[SINGLE] What is the primary aim of the month end reconciliation table?",
+        "options": [
+            "To reconcile Bitwave internal logs with blockchain explorers",
+            "To help users ignore invalid transactions",
+            "To validate gain/loss calculations",
+            "To ensure wallet balances and ERP journal entries match"
+        ],
+        "correct": [3],
+        "type": "single"
+    },
+    {
+        "question": "[SINGLE] How to confirm journal entries are reflected in GL?",
+        "options": [
+            "View confirmation status in the Transactions tab",
+            "Check the GL posting log in your ERP",
+            "Review the journal entry export in Reports tab",
+            "Open the wallet management settings"
+        ],
+        "correct": [2],
+        "type": "single"
+    },
+    {
+        "question": "[SINGLE] Which gain/loss value should the user select?",
+        "options": [
+            "Realized gains only",
+            "Unrealized gains only",
+            "Total gain/loss",
+            "Based on accounting method and use case"
+        ],
+        "correct": [3],
+        "type": "single"
+    },
+    {
+        "question": "[SINGLE] Which is true about the gain/loss runner?",
+        "options": [
+            "It generates automatic syncing of all gains to the ERP",
+            "It can be manually run and downloaded",
+            "It is only available to admin users",
+            "It requires categorization to be disabled"
+        ],
+        "correct": [1],
+        "type": "single"
+    },
+    {
+        "question": "[MULTI] When should you ignore transactions?",
+        "options": [
+            "For duplicate entries",
+            "For spam or dust airdrops",
+            "For all incoming transactions",
+            "For transactions not requiring accounting treatment"
+        ],
+        "correct": [0, 1, 3],
+        "type": "multi"
     }
 ]
 
