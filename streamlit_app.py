@@ -49,7 +49,12 @@ if not st.session_state.user_info_submitted:
             st.rerun()
 
 # ========== 2. Initialize Quiz State ==========
-if st.session_state.user_info_submitted and "start_time" not in st.session_state:
+if (
+    st.session_state.user_info_submitted
+    and "start_time" not in st.session_state
+    and not st.session_state.get("submitted", False)
+    and not st.session_state.get("show_results", False)
+):
     st.session_state.start_time = time.time()
     st.session_state.responses = [{} for _ in quiz_data]
     st.session_state.submitted = False
