@@ -49,9 +49,7 @@ if not st.session_state.submitted:
         st.session_state.responses[i] = user_answers
 
     if st.button("Submit Quiz"):
-    st.session_state.submitted = True
-    st.session_state.show_results = True
-    st.stop()  # Clean rerun replacement  # ends the script run after setting session state
+      # Fixed indentation and removed duplicates  # ends the script run after setting session state
     st.session_state.submitted = True
     st.session_state.show_results = True
     st.stop()
@@ -103,7 +101,7 @@ def send_email_with_pdf(pdf_path, score):
         part.add_header("Content-Disposition", f"attachment; filename= results.pdf")
         msg.attach(part)
 
-    with smtplib.SMTP("smtp.example.com", 587) as server:  # Replace smtp.example.com
+    with smtplib.SMTP(os.getenv("SMTP_HOST"), int(os.getenv("SMTP_PORT", 587))) as server:  # Replace smtp.example.com
         server.starttls()
         server.login("your_username", "your_password")
         server.send_message(msg)
