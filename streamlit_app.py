@@ -51,7 +51,7 @@ if not st.session_state.submitted:
     if st.button("Submit Quiz"):
     st.session_state.submitted = True
     st.session_state.show_results = True
-    st.stop()
+    st.stop()  # ends the script run after setting session state
     st.session_state.submitted = True
     st.session_state.show_results = True
     st.stop()
