@@ -122,7 +122,6 @@ if st.session_state.user_info_submitted and not st.session_state.submitted:
     for i, q in enumerate(quiz_data):
         with st.container():
             st.markdown(f'<div class="question-box"><strong>Q{i + 1}:</strong> {q["question"]}', unsafe_allow_html=True)
-            st.markdown(f'<strong>Q{i + 1}:</strong> {q["question"]}', unsafe_allow_html=True)
             user_answers = []
             for j, option in enumerate(q["options"]):
                 key = f"q{i}_opt{j}"
