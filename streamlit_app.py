@@ -17,21 +17,22 @@ from quiz_data import quiz_data
 ATTEMPT_LOG = "attempts_log.csv"
 
 # ========== 1. Pre-Quiz User Info ==========
-st.set_page_config(page_title="Bitwave Basics Certification Quiz", layout="wide")
+st.set_page_config(page_title="Bitwave Basics Certification Quiz", layout="wide", initial_sidebar_state="collapsed")
     
 # ===== Timer at Top Right =====
 css = '''
 <style>
-    .timer-box {
-        position: absolute;
-        top: 1rem;
-        right: 2rem;
-        background-color: #f0f2f6;
-        padding: 0.5rem 1rem;
-        border-radius: 8px;
-        font-weight: bold;
-        font-size: 1.1rem;
-    }
+.timer-box {
+    position: fixed;
+    top: 0.5rem;
+    left: 1rem;
+    font-weight: 600;
+    font-size: 1rem;
+    z-index: 9999;
+    background: none;
+    padding: 0;
+    margin: 0;
+}
 </style>
 '''
 st.markdown(css, unsafe_allow_html=True)
@@ -91,7 +92,7 @@ if st.session_state.user_info_submitted and "start_time" in st.session_state and
         st.session_state.show_results = True
 
     mins, secs = divmod(remaining, 60)
-    st.markdown(f'<div class="timer-box">🕒 Time Left: {mins:02}:{secs:02}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="timer-box">Time Left: {mins:02}:{secs:02}</div>', unsafe_allow_html=True)
   
     if "start_time" in st.session_state and not st.session_state.submitted and "quiz_rendered" in st.session_state:
         time.sleep(1)
