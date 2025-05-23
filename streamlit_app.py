@@ -121,15 +121,10 @@ if st.session_state.user_info_submitted and not st.session_state.submitted:
     st.write("Please answer all questions below:")
     for i, q in enumerate(quiz_data):
         with st.container():
-            st.markdown(f'<div class="question-box">', unsafe_allow_html=True)
+            st.markdown('<div class="question-box">', unsafe_allow_html=True)
             st.markdown(f'<strong>Q{i + 1}:</strong> {q["question"]}', unsafe_allow_html=True)
             user_answers = []
             for j, option in enumerate(q["options"]):
-                key = f"q{i}_opt{j}"
-                if st.checkbox(option, key=key):
-                    user_answers.append(j)
-            st.markdown('</div>', unsafe_allow_html=True)
-        st.session_state.responses[i] = user_answers            for j, option in enumerate(q["options"]):
                 key = f"q{i}_opt{j}"
                 if st.checkbox(option, key=key):
                     user_answers.append(j)
