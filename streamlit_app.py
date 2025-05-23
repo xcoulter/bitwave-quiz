@@ -24,7 +24,8 @@ st.set_page_config(page_title="Bitwave Basics Certification Quiz", layout="wide"
 css = '''
 <style>
 body {
-    background: linear-gradient(90deg, #060B28 0%, #1C1E3D 100%) !important;
+    background: linear-gradient(135deg, #051C2C 0%, #0B324B 100%) !important;
+    background-attachment: fixed;
     color: white;
 }
 .timer-box {
