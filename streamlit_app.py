@@ -68,7 +68,7 @@ if remaining <= 0:
 st.sidebar.write(f"🕒 Time Left: {remaining // 60}m {remaining % 60}s")
 
 # ========== 4. Quiz Form ==========
-if not st.session_state.submitted:
+if st.session_state.user_info_submitted and not st.session_state.submitted:
     st.write("Please answer all questions below:")
     for i, q in enumerate(quiz_data):
         st.markdown(f"### Q{i + 1}: {q['question']}")
