@@ -24,7 +24,7 @@ css = '''
 <style>
 .timer-box {
     position: fixed;
-    top: 2.5rem;
+    top: 4rem;
     right: 1rem;
     font-weight: 600;
     font-size: 1rem;
