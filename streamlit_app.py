@@ -23,9 +23,13 @@ st.set_page_config(page_title="Bitwave Basics Certification Quiz", layout="wide"
 # ===== Timer at Top Right =====
 css = '''
 <style>
+body {
+    background: linear-gradient(90deg, #060B28 0%, #1C1E3D 100%) !important;
+    color: white;
+}
 .timer-box {
     position: fixed;
-    top: 4rem;
+    top: 1rem;
     right: 1rem;
     font-weight: 600;
     font-size: 1rem;
