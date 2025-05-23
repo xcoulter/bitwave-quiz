@@ -88,9 +88,9 @@ if st.session_state.user_info_submitted and not st.session_state.submitted:
             if st.checkbox(option, key=key):
                 user_answers.append(j)
         st.session_state.responses[i] = user_answers
-if st.button("Submit Quiz"):
-    st.session_state.submitted = True
-    st.session_state.show_results = True
+    if st.button("Submit Quiz"):
+        st.session_state.submitted = True
+        st.session_state.show_results = True
 
 # ========== 5. Show Results ==========
 def generate_summary():
