@@ -144,7 +144,7 @@ def send_email_with_pdf(pdf_path, score):
         server.send_message(msg)
 
 # ========== 6. Results Page ==========
-if st.session_state.show_results:
+if st.session_state.get("show_results"):
     st.success("✅ Quiz complete!")
     score, results, summary = generate_summary()
     st.write(f"**Score: {score} / {len(quiz_data)}**")
