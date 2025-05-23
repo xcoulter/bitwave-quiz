@@ -49,9 +49,9 @@ if not st.session_state.submitted:
         st.session_state.responses[i] = user_answers
 
     if st.button("Submit Quiz"):
-        st.session_state.submitted = True
-        st.session_state.show_results = True
-        st.experimental_rerun()
+    st.session_state.submitted = True
+    st.session_state.show_results = True
+    st.stop()
 
 # ========== 5. Show Results ==========
 def generate_summary():
