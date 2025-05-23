@@ -10,6 +10,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 import os
+from streamlit_autorefresh import st_autorefresh
 import csv
 from datetime import datetime
 from quiz_data import quiz_data
@@ -99,8 +100,7 @@ if st.session_state.user_info_submitted and "start_time" in st.session_state and
     and not st.session_state.submitted
     and not st.session_state.get("show_results", False)
 ):
-        time.sleep(1)
-        st.rerun()
+    st_autorefresh(interval=1000, key="quiz_timer_refresh")
 
 # ========== 4. Quiz Form ==========
 if st.session_state.user_info_submitted and not st.session_state.submitted:
