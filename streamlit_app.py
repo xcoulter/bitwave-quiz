@@ -2,7 +2,7 @@
 
 # This Python script builds an interactive quiz application using Streamlit. It includes:
 # - 60-question multiple-choice quiz
-# - 45-second timer per question
+# - 90-minute total timer for the quiz
 # - Scoring logic
 # - User result tracking
 
@@ -12,7 +12,7 @@ import time
 # ========== 1. Define the Quiz Data ==========
 quiz_data = [
     {
-        "question": "What are the primary use cases of Bitwave?",
+        "question": "[MULTI] What are the primary use cases of Bitwave?",
         "options": [
             "Crypto accounting",
             "Crypto tax and Compliance",
@@ -24,7 +24,7 @@ quiz_data = [
         "type": "multi"
     },
     {
-        "question": "Which of the following best describes how Bitwave functions as a bookkeepers tool?",
+        "question": "[SINGLE] Which of the following best describes how Bitwave functions as a bookkeepers tool?",
         "options": [
             "a 'set-it and forget-it' accounting software that will automatically categorise and produce reports",
             "a crypto exchange",
@@ -35,7 +35,7 @@ quiz_data = [
         "type": "single"
     },
     {
-        "question": "Where does Bitwave sit in the following process?",
+        "question": "[SINGLE] Where does Bitwave sit in the following process?",
         "options": [
             "ERP --> Blockchain --> Bitwave",
             "Blockchain --> ERP --> Bitwave",
@@ -49,55 +49,62 @@ quiz_data = [
 ]
 
 # ========== 2. App Initialization ==========
-st.set_page_config(page_title="Bitwave Basics Certification Quiz", layout="centered")
+st.set_page_config(page_title="Bitwave Basics Certification Quiz", layout="wide")
 st.title("🧠 Bitwave Basics Certification Quiz")
 
-if "score" not in st.session_state:
-    st.session_state.score = 0
-    st.session_state.responses = []
-    st.session_state.index = 0
+if "start_time" not in st.session_state:
     st.session_state.start_time = time.time()
+    st.session_state.responses = [{} for _ in quiz_data]
+    st.session_state.submitted = False
 
-# ========== 3. Timer Logic ==========
-current_index = st.session_state.index
-question_start_time = st.session_state.get("question_start_time", time.time())
-elapsed = time.time() - question_start_time
-remaining = 45 - int(elapsed)
+# ========== 3. Timer Display ==========
+total_quiz_duration = 90 * 60  # 90 minutes in seconds
+elapsed = time.time() - st.session_state.start_time
+remaining = int(total_quiz_duration - elapsed)
 
 if remaining <= 0:
-    st.warning("⏰ Time's up! Moving to next question.")
-    st.session_state.responses.append({"q": current_index, "answer": [], "is_correct": False})
-    st.session_state.index += 1
-    st.session_state.question_start_time = time.time()
-    st.experimental_rerun()
+    st.warning("⏰ Time's up! Auto-submitting your responses.")
+    st.session_state.submitted = True
 
-# ========== 4. Question Display ==========
-if current_index < len(quiz_data):
-    q = quiz_data[current_index]
-    st.write(f"**Q{current_index + 1}:** {q['question']}")
-    
-    selected = st.multiselect("Select answer(s):", q["options"])
-    st.write(f"⏳ Time left: {remaining} seconds")
+st.sidebar.write(f"🕒 Time Remaining: {remaining // 60} minutes {remaining % 60} seconds")
 
-    if st.button("Submit"):
+# ========== 4. Full Quiz Display ==========
+st.write("Please answer all questions below. Use checkboxes for multiple choice.")
+
+for i, q in enumerate(quiz_data):
+    st.markdown(f"### Q{i + 1}: {q['question']}")
+    user_answers = []
+    for j, option in enumerate(q["options"]):
+        key = f"q{i}_opt{j}"
+        if st.checkbox(option, key=key):
+            user_answers.append(j)
+    st.session_state.responses[i] = user_answers
+
+# ========== 5. Submit and Scoring ==========
+if not st.session_state.submitted:
+    if st.button("Submit Quiz"):
+        st.session_state.submitted = True
+
+if st.session_state.submitted:
+    score = 0
+    results = []
+    for i, q in enumerate(quiz_data):
         correct = sorted(q["correct"])
-        is_correct = sorted([q["options"].index(opt) for opt in selected]) == correct
+        given = sorted(st.session_state.responses[i])
+        is_correct = (given == correct)
         if is_correct:
-            st.session_state.score += 1
-        st.session_state.responses.append({"q": current_index, "answer": selected, "is_correct": is_correct})
-        st.session_state.index += 1
-        st.session_state.question_start_time = time.time()
-        st.experimental_rerun()
-else:
-    # ========== 5. Results ==========
+            score += 1
+        results.append((i + 1, is_correct, [q["options"][x] for x in given]))
+
     st.success("✅ Quiz complete!")
-    st.write(f"Your Score: **{st.session_state.score} / {len(quiz_data)}**")
+    st.write(f"Your Score: **{score} / {len(quiz_data)}**")
+
     st.write("### Summary")
-    for r in st.session_state.responses:
-        status = "✅" if r["is_correct"] else "❌"
-        st.write(f"Q{r['q']+1}: {status} - Your answer: {r['answer']}")
+    for qnum, correct, answers in results:
+        status = "✅" if correct else "❌"
+        st.write(f"Q{qnum}: {status} - Your answer: {answers}")
 
     if st.button("Restart Quiz"):
-        for key in ["score", "responses", "index", "question_start_time"]:
-            st.session_state.pop(key, None)
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
         st.experimental_rerun()
