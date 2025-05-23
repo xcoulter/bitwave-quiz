@@ -6,8 +6,6 @@
 # - Scoring logic
 # - User result tracking
 
-
-```python
 import streamlit as st
 import time
 
@@ -103,4 +101,3 @@ else:
         for key in ["score", "responses", "index", "question_start_time"]:
             st.session_state.pop(key, None)
         st.experimental_rerun()
-```
