@@ -168,7 +168,7 @@ if st.session_state.get("confirm_prompt_active") and not st.session_state.get("c
             confirm = st.radio("Are you sure you want to submit your quiz?", ["No", "Yes"], horizontal=True, key="confirm_prompt")
 
         if confirm == "Yes":
-            st.session_state.submitted = True
+            st.session_state.submission_confirmed = True
             st.session_state.show_results = False
             st.session_state.confirming_done = True
             st.session_state.pending_submit = False
@@ -235,12 +235,18 @@ def send_email_with_pdf(pdf_path, score):
         server.send_message(msg)
 
 # ========== 6. Results Page ==========
-if st.session_state.get("submitted") and st.session_state.get("confirming_done") and not st.session_state.get("show_results"):
+if st.session_state.get("submission_confirmed") and not st.session_state.get("submitted") and not st.session_state.get("show_results"):
     st.session_state.show_results = True
     st.experimental_rerun()
 if st.session_state.get("submitted") and not st.session_state.get("show_results"):
     st.session_state.show_results = True
     st.experimental_rerun()
+if st.session_state.get("submission_confirmed") and not st.session_state.get("submitted"):
+    st.session_state.submitted = True
+    st.session_state.show_results = True
+    st.session_state.confirming_done = True
+    st.rerun()
+
 if st.session_state.get("show_results"):
     st.success("✅ Quiz complete!")
     score, results, summary = generate_summary()
