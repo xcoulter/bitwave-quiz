@@ -142,7 +142,7 @@ if st.session_state.user_info_submitted and "start_time" in st.session_state and
 # ========== 4. Quiz Form ==========
 if st.session_state.user_info_submitted and not st.session_state.submitted:
     st.markdown("<p style='margin-top: -3rem; font-size: 1.4rem;'>Please answer all questions below:</p>", unsafe_allow_html=True)
-    st.markdown("<div style='background-color: #112233; padding: 1rem; border: 2px solid #00c8ff; border-radius: 10px; margin-top: 2rem;'>", unsafe_allow_html=True)
+    
     for i, q in enumerate(quiz_data):
         with st.container():
             st.markdown(f'<strong style="font-size: 1.4rem;">Q{i + 1}:</strong> {q["question"]}', unsafe_allow_html=True)
