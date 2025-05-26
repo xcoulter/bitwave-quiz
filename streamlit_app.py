@@ -254,6 +254,16 @@ if st.session_state.get("show_results"):
     st.write(f"**Score: {score} / {len(quiz_data)}**")
 
     st.write("### Review")
+    with st.container():
+        with st.expander("🔍 Scroll to review your answers", expanded=True):
+            scrollable_results = []
+            for qnum, correct, given, correct_ans in results:
+                status = "✅" if correct else "❌"
+                st.markdown(f"**Q{qnum} {status}**")
+                st.markdown(f"Your answer: {given}")
+                if not correct:
+                    st.markdown(f"Correct answer: {correct_ans}")
+                scrollable_results.append([qnum, status, ", ".join(given), ", ".join(correct_ans)])
     for qnum, correct, given, correct_ans in results:
         status = "✅" if correct else "❌"
         st.write(f"**Q{qnum} {status}**")
@@ -266,6 +276,12 @@ if st.session_state.get("show_results"):
         b64 = base64.b64encode(f.read()).decode()
         href = f'<a href="data:application/octet-stream;base64,{b64}" download="bitwave_results.pdf">📄 Download PDF of Results</a>'
         st.markdown(href, unsafe_allow_html=True)
+
+    # CSV download
+    import pandas as pd
+    df_results = pd.DataFrame(scrollable_results, columns=["Question #", "Correct", "Your Answer", "Correct Answer"])
+    csv_data = df_results.to_csv(index=False).encode("utf-8")
+    st.download_button("📥 Download Results as CSV", csv_data, "bitwave_results.csv", "text/csv")
 
     # Log the attempt
     with open(ATTEMPT_LOG, "a", newline="") as f:
@@ -285,6 +301,7 @@ if st.session_state.get("show_results"):
         st.warning("⚠️ Email not sent. Check SMTP config.")
 
     if st.button("Restart Quiz"):
-        for key in list(st.session_state.keys()):
-            del st.session_state[key]
-        st.rerun()
+    for key in list(st.session_state.keys()):
+        del st.session_state[key]
+    st.session_state.user_info_submitted = False
+    st.rerun()
