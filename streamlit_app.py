@@ -303,5 +303,5 @@ if st.session_state.get("show_results"):
     if st.button("Restart Quiz"):
     for key in list(st.session_state.keys()):
         del st.session_state[key]
-    st.session_state.user_info_submitted = False
+    st.session_state.clear()
     st.rerun()
