@@ -173,10 +173,7 @@ if st.session_state.get("pending_submit") and not st.session_state.get("confirmi
     elif confirm == "No":
         st.session_state.pending_submit = False
         st.experimental_rerun()
-            st.session_state.submitted = True
-            st.session_state.show_results = False
-            st.session_state.confirming_done = True
-            st.rerun()
+
 
 # ========== 5. Show Results ==========
 def generate_summary():
