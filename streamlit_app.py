@@ -176,7 +176,7 @@ if st.session_state.get("confirm_prompt_active") and not st.session_state.get("c
 
         
 
-    elif confirm == "No":
+            elif confirm == "No":
         st.session_state.pending_submit = False
         st.session_state.confirm_prompt_active = False
         st.rerun()
