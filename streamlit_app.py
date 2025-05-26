@@ -155,13 +155,24 @@ if st.session_state.user_info_submitted and not st.session_state.submitted:
         st.session_state.responses[i] = user_answers
     st.session_state.quiz_rendered = True
     if st.button("Submit Quiz"):
-        unanswered = sum(1 for r in st.session_state.responses if not r)
-        if unanswered:
-            confirm = st.radio(f"You have {unanswered} unanswered question(s). Are you sure you want to submit?", ["No", "Yes"], horizontal=True)
-        else:
-            confirm = st.radio("Are you sure you want to submit your quiz?", ["No", "Yes"], horizontal=True)
+        st.session_state.pending_submit = True
 
-        if confirm == "Yes":
+if st.session_state.get("pending_submit") and not st.session_state.get("confirming_done"):
+    unanswered = sum(1 for r in st.session_state.responses if not r)
+    if unanswered:
+        confirm = st.radio(f"You have {unanswered} unanswered question(s). Are you sure you want to submit?", ["No", "Yes"], horizontal=True, key="confirm_prompt")
+    else:
+        confirm = st.radio("Are you sure you want to submit your quiz?", ["No", "Yes"], horizontal=True, key="confirm_prompt")
+
+    if confirm == "Yes":
+        st.session_state.submitted = True
+        st.session_state.show_results = False
+        st.session_state.confirming_done = True
+        st.session_state.pending_submit = False
+        st.rerun()
+    elif confirm == "No":
+        st.session_state.pending_submit = False
+        st.experimental_rerun()
             st.session_state.submitted = True
             st.session_state.show_results = False
             st.session_state.confirming_done = True
