@@ -151,6 +151,7 @@ if st.session_state.user_info_submitted and not st.session_state.submitted:
                 if st.checkbox(option, key=key):
                     user_answers.append(j)
             
+        st.markdown("<hr style='margin: 2rem 0; border: none; border-top: 1px solid #555;'>", unsafe_allow_html=True)
         st.session_state.responses[i] = user_answers
     st.session_state.quiz_rendered = True
     if st.button("Submit Quiz"):
