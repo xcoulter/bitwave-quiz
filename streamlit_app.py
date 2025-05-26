@@ -102,7 +102,7 @@ if not st.session_state.user_info_submitted:
             st.session_state.email = email
             st.session_state.company = company
             st.session_state.user_info_submitted = True
-                    st.rerun()
+            st.rerun()
 
 # ========== 2. Initialize Quiz State ==========
 if (
@@ -301,6 +301,6 @@ if st.session_state.get("show_results"):
         st.warning("⚠️ Email not sent. Check SMTP config.")
 
     if st.button("Restart Quiz"):
-    st.session_state.clear()
-    st.session_state.user_info_submitted = False
-    st.rerun()
+        st.session_state.clear()
+        st.session_state.user_info_submitted = False
+        st.rerun()
