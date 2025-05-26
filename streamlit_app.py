@@ -256,19 +256,20 @@ if st.session_state.get("show_results"):
     st.write("### Review")
     scrollable_results = []
     
-    with st.container():
-        with st.expander("🔍 Scroll to review your answers", expanded=True):
-            st.markdown("<div style='max-height: 200px; overflow-y: auto;'>", unsafe_allow_html=True)
-            scrollable_results = []
-            st.markdown("</div>", unsafe_allow_html=True)
-
+    with st.expander("🔍 Scroll to review your answers", expanded=True):
+    st.markdown("<div style='max-height: 300px; overflow-y: auto; padding-right: 1rem;'>", unsafe_allow_html=True)
+    
     for qnum, correct, given, correct_ans in results:
         status = "✅" if correct else "❌"
-        st.markdown(f"**Q{qnum} {status}**")
-        st.markdown(f"Your answer: {given}")
+        st.markdown(f"<div class='question-box'>", unsafe_allow_html=True)
+        st.markdown(f"**Q{qnum} {status}**", unsafe_allow_html=True)
+        st.markdown(f"**Your answer:** {', '.join(given) or 'No answer provided'}", unsafe_allow_html=True)
         if not correct:
-            st.markdown(f"Correct answer: {correct_ans}")
-        scrollable_results.append([qnum, status, ", ".join(given), ", ".join(correct_ans)])
+            st.markdown(f"**Correct answer:** {', '.join(correct_ans)}", unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
 
     pdf_path = create_pdf(summary)
     with open(pdf_path, "rb") as f:
