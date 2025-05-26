@@ -47,6 +47,21 @@ css = '''
         margin-bottom: 1.5rem;
     }
     
+    input[type="text"] {
+        border: 1px solid white;
+        border-radius: 6px;
+        padding: 0.4rem;
+        color: white;
+        background-color: transparent;
+    }
+    .stButton > button {
+        background: linear-gradient(90deg, #02D1FF 0%, #3DF586 100%) !important;
+        color: black !important;
+        border: none;
+        font-weight: bold;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+    }
 </style>
 '''
 st.markdown(css, unsafe_allow_html=True)
