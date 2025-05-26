@@ -163,7 +163,7 @@ if st.session_state.get("confirm_prompt_active") and not st.session_state.get("c
     with st.container():
         unanswered = sum(1 for r in st.session_state.responses if not r)
         if unanswered:
-            confirm = st.radio(f"You have {unanswered} unanswered question(s). Are you sure you want to submit?", ["No", "Yes"], horizontal=True, key="confirm_prompt")
+            confirm = st.radio(f"You have {unanswered} unanswered question(s). Are you sure you want to submit?", ["No", "Yes"], horizontal=True, key=f"confirm_prompt_{int(time.time())}")
         else:
             confirm = st.radio("Are you sure you want to submit your quiz?", ["No", "Yes"], horizontal=True, key="confirm_prompt")
 
