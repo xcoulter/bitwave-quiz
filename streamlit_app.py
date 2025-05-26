@@ -50,6 +50,7 @@ css = '''
 </style>
 '''
 st.markdown(css, unsafe_allow_html=True)
+st.image("assets/bitwave-icon.png", width=100)
 st.image("https://uploads-ssl.webflow.com/6414c1b20a8bb758e308c685/6414c1b20a8bb716eb08c69d_Bitwave_Logo.svg", width=160)
 st.markdown("# Bitwave Basics Certification Quiz")
 
