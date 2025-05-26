@@ -142,6 +142,7 @@ if st.session_state.user_info_submitted and "start_time" in st.session_state and
 # ========== 4. Quiz Form ==========
 if st.session_state.user_info_submitted and not st.session_state.submitted:
     st.markdown("<p style='margin-top: -3rem; font-size: 1.4rem;'>Please answer all questions below:</p>", unsafe_allow_html=True)
+    st.markdown("<div style='background-color: #112233; padding: 1rem; border: 2px solid #00c8ff; border-radius: 10px; margin-top: 2rem;'>", unsafe_allow_html=True)
     for i, q in enumerate(quiz_data):
         with st.container():
             st.markdown(f'<strong style="font-size: 1.4rem;">Q{i + 1}:</strong> {q["question"]}', unsafe_allow_html=True)
@@ -159,7 +160,7 @@ if st.session_state.user_info_submitted and not st.session_state.submitted:
         st.session_state.confirm_prompt_active = True
 
 if st.session_state.get("confirm_prompt_active") and not st.session_state.get("confirming_done"):
-    with st.modal("Confirm Submission"):
+    with st.container():
         unanswered = sum(1 for r in st.session_state.responses if not r)
         if unanswered:
             confirm = st.radio(f"You have {unanswered} unanswered question(s). Are you sure you want to submit?", ["No", "Yes"], horizontal=True, key="confirm_prompt")
