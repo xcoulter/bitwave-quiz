@@ -254,11 +254,23 @@ if st.session_state.get("show_results"):
     st.write(f"**Score: {score} / {len(quiz_data)}**")
 
     st.write("### Review")
+    
     with st.container():
         with st.expander("🔍 Scroll to review your answers", expanded=True):
+            st.markdown("<div style='max-height: 200px; overflow-y: auto;'>", unsafe_allow_html=True)
             st.markdown("<div style='max-height: 300px; overflow-y: auto;'>", unsafe_allow_html=True)
             scrollable_results = []
             
+
+                st.markdown("</div>", unsafe_allow_html=True)
+
+    for qnum, correct, given, correct_ans in results:
+        status = "✅" if correct else "❌"
+        st.markdown(f"**Q{qnum} {status}**")
+        st.markdown(f"Your answer: {given}")
+        if not correct:
+            st.markdown(f"Correct answer: {correct_ans}")
+        scrollable_results.append([qnum, status, ", ".join(given), ", ".join(correct_ans)])
 
     pdf_path = create_pdf(summary)
     with open(pdf_path, "rb") as f:
