@@ -174,15 +174,7 @@ if st.session_state.get("confirm_prompt_active") and not st.session_state.get("c
                 st.session_state.pending_submit = False
                 st.session_state.confirm_prompt_active = False
                 st.rerun()
-        else:
-            confirm = st.radio("Are you sure you want to submit your quiz?", ["No", "Yes"], horizontal=True, key="confirm_prompt")
-
-        if confirm == "Yes":
-            st.session_state.confirmation_resolved = True
-        elif confirm == "No":
-            st.session_state.pending_submit = False
-            st.session_state.confirm_prompt_active = False
-            st.rerun()
+        
 
 
 
