@@ -141,7 +141,7 @@ if st.session_state.user_info_submitted and "start_time" in st.session_state and
 
 # ========== 4. Quiz Form ==========
 if st.session_state.user_info_submitted and not st.session_state.submitted:
-    st.write("Please answer all questions below:")
+    st.markdown("## Please answer all questions below:")
     for i, q in enumerate(quiz_data):
         with st.container():
             st.markdown(f'<strong style="font-size: 1.4rem;">Q{i + 1}:</strong> {q["question"]}', unsafe_allow_html=True)
