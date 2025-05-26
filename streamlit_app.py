@@ -260,9 +260,7 @@ if st.session_state.get("show_results"):
         with st.expander("🔍 Scroll to review your answers", expanded=True):
             st.markdown("<div style='max-height: 200px; overflow-y: auto;'>", unsafe_allow_html=True)
             scrollable_results = []
-            
-
-                st.markdown("</div>", unsafe_allow_html=True)
+            st.markdown("</div>", unsafe_allow_html=True)
 
     for qnum, correct, given, correct_ans in results:
         status = "✅" if correct else "❌"
