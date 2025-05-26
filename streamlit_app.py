@@ -140,7 +140,7 @@ if st.session_state.user_info_submitted and "start_time" in st.session_state and
         st_autorefresh(interval=1000, key="quiz_timer_refresh")
 
 # ========== 4. Quiz Form ==========
-if st.session_state.user_info_submitted and not st.session_state.submitted:
+if st.session_state.user_info_submitted and not st.session_state.submitted and not st.session_state.get("confirm_prompt_active", False):
     st.markdown("<p style='margin-top: -3rem; font-size: 1.4rem;'>Please answer all questions below:</p>", unsafe_allow_html=True)
     
     for i, q in enumerate(quiz_data):
