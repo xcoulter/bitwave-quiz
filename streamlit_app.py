@@ -172,7 +172,7 @@ if st.session_state.get("pending_submit") and not st.session_state.get("confirmi
         st.rerun()
     elif confirm == "No":
         st.session_state.pending_submit = False
-        st.experimental_rerun()
+        st.rerun()
 
 
 # ========== 5. Show Results ==========
