@@ -49,7 +49,11 @@ css = '''
     
     input[type="text"] {
         background-color: #000000;
-    }
+        border: 1px solid white;
+        border-radius: 6px;
+        padding: 0.4rem;
+        color: white;
+}
     .stButton > button {
         background: linear-gradient(90deg, #02D1FF 0%, #3DF586 100%) !important;
         color: black !important;
