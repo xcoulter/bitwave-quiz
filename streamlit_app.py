@@ -155,8 +155,16 @@ if st.session_state.user_info_submitted and not st.session_state.submitted:
         st.session_state.responses[i] = user_answers
     st.session_state.quiz_rendered = True
     if st.button("Submit Quiz"):
-        st.session_state.submitted = True
-        st.session_state.show_results = True
+        unanswered = sum(1 for r in st.session_state.responses if not r)
+        if unanswered:
+            confirm = st.radio(f"You have {unanswered} unanswered question(s). Are you sure you want to submit?", ["No", "Yes"], horizontal=True)
+        else:
+            confirm = st.radio("Are you sure you want to submit your quiz?", ["No", "Yes"], horizontal=True)
+
+        if confirm == "Yes":
+            st.session_state.submitted = True
+            st.session_state.show_results = False
+            st.rerun()
 
 # ========== 5. Show Results ==========
 def generate_summary():
@@ -212,6 +220,9 @@ def send_email_with_pdf(pdf_path, score):
         server.send_message(msg)
 
 # ========== 6. Results Page ==========
+if st.session_state.get("submitted") and not st.session_state.get("show_results"):
+    st.session_state.show_results = True
+    st.experimental_rerun()
 if st.session_state.get("show_results"):
     st.success("✅ Quiz complete!")
     score, results, summary = generate_summary()
