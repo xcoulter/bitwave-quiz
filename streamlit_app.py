@@ -48,11 +48,7 @@ css = '''
     }
     
     input[type="text"] {
-        border: 1px solid white;
-        border-radius: 6px;
-        padding: 0.4rem;
-        color: white;
-        background-color: transparent;
+        background-color: #000000;
     }
     .stButton > button {
         background: linear-gradient(90deg, #02D1FF 0%, #3DF586 100%) !important;
@@ -70,7 +66,7 @@ css = '''
 </style>
 '''
 st.markdown(css, unsafe_allow_html=True)
-st.image("assets/bitwave-logo.png", width=100, output_format="PNG")
+st.image("assets/bitwave-logo.png", width=100)
 st.image("https://uploads-ssl.webflow.com/6414c1b20a8bb758e308c685/6414c1b20a8bb716eb08c69d_Bitwave_Logo.svg", width=160)
 st.markdown("# Bitwave Basics Certification Quiz")
 
