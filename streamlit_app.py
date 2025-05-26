@@ -255,8 +255,6 @@ if st.session_state.get("show_results"):
 
     st.write("### Review")
     scrollable_results = []
-    
-   scrollable_results = []
 
 with st.expander("🔍 Scroll to review your answers", expanded=True):
     html = '<div style="max-height: 300px; overflow-y: auto; padding-right: 1rem;">'
