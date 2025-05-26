@@ -155,7 +155,7 @@ if st.session_state.user_info_submitted and not st.session_state.submitted:
         st.session_state.responses[i] = user_answers
     st.session_state.quiz_rendered = True
     if st.button("Submit Quiz"):
-    st.session_state.pending_submit = True
+        st.session_state.pending_submit = True
     st.session_state.confirm_prompt_active = True
 
 if st.session_state.get("confirm_prompt_active") and not st.session_state.get("confirming_done"):
@@ -166,7 +166,7 @@ if st.session_state.get("confirm_prompt_active") and not st.session_state.get("c
         confirm = st.radio("Are you sure you want to submit your quiz?", ["No", "Yes"], horizontal=True, key="confirm_prompt")
 
     if confirm == "Yes":
-    st.session_state.submitted = True
+        st.session_state.submitted = True
         st.session_state.show_results = False
         st.session_state.confirming_done = True
         st.session_state.pending_submit = False
