@@ -254,11 +254,11 @@ if st.session_state.get("show_results"):
     st.write(f"**Score: {score} / {len(quiz_data)}**")
 
     st.write("### Review")
+    scrollable_results = []
     
     with st.container():
         with st.expander("🔍 Scroll to review your answers", expanded=True):
             st.markdown("<div style='max-height: 200px; overflow-y: auto;'>", unsafe_allow_html=True)
-            st.markdown("<div style='max-height: 300px; overflow-y: auto;'>", unsafe_allow_html=True)
             scrollable_results = []
             
 
