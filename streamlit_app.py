@@ -75,7 +75,7 @@ st.image("https://uploads-ssl.webflow.com/6414c1b20a8bb758e308c685/6414c1b20a8bb
 st.markdown("# Bitwave Basics Certification Quiz")
 
 if "user_info_submitted" not in st.session_state:
-    st.session_state.user_info_submitted = False
+            st.session_state.user_info_submitted = False
 
 if not st.session_state.user_info_submitted:
     st.subheader("Before you begin, please enter your details:")
@@ -102,7 +102,7 @@ if not st.session_state.user_info_submitted:
             st.session_state.email = email
             st.session_state.company = company
             st.session_state.user_info_submitted = True
-            st.rerun()
+                    st.rerun()
 
 # ========== 2. Initialize Quiz State ==========
 if (
