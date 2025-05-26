@@ -164,6 +164,7 @@ if st.session_state.user_info_submitted and not st.session_state.submitted:
         if confirm == "Yes":
             st.session_state.submitted = True
             st.session_state.show_results = False
+            st.session_state.confirming_done = True
             st.rerun()
 
 # ========== 5. Show Results ==========
@@ -220,6 +221,9 @@ def send_email_with_pdf(pdf_path, score):
         server.send_message(msg)
 
 # ========== 6. Results Page ==========
+if st.session_state.get("submitted") and st.session_state.get("confirming_done") and not st.session_state.get("show_results"):
+    st.session_state.show_results = True
+    st.experimental_rerun()
 if st.session_state.get("submitted") and not st.session_state.get("show_results"):
     st.session_state.show_results = True
     st.experimental_rerun()
