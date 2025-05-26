@@ -93,6 +93,8 @@ if not st.session_state.user_info_submitted:
     if st.button("Start Quiz"):
         if not name or not email or not company:
             st.warning("Please fill in all fields to begin.")
+        elif "@" not in email:
+            st.error("🚫 Please enter a valid email address.")
         elif get_attempts(email) >= 3:
             st.error("❌ You have reached the maximum of 3 quiz attempts. Contact support for access.")
         else:
