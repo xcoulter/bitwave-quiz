@@ -275,11 +275,43 @@ with st.expander("🔍 Scroll to review your answers", expanded=True):
 
 
 
-    pdf_path = create_pdf(summary)
-    with open(pdf_path, "rb") as f:
-        b64 = base64.b64encode(f.read()).decode()
-        href = f'<a href="data:application/octet-stream;base64,{b64}" download="bitwave_results.pdf">📄 Download PDF of Results</a>'
-        st.markdown(href, unsafe_allow_html=True)
+# --- Actions Above Review ---
+st.write("### Your Quiz Results")
+
+pdf_path = create_pdf(summary)
+
+# PDF Button
+with open(pdf_path, "rb") as f:
+    st.download_button(
+        label="📄 Download PDF of Results",
+        data=f,
+        file_name="bitwave_results.pdf",
+        mime="application/octet-stream"
+    )
+
+# CSV Button
+import pandas as pd
+df_results = pd.DataFrame(scrollable_results, columns=["Question #", "Correct", "Your Answer", "Correct Answer"])
+csv_data = df_results.to_csv(index=False).encode("utf-8")
+st.download_button(
+    label="📥 Download Results as CSV",
+    data=csv_data,
+    file_name="bitwave_results.csv",
+    mime="text/csv"
+)
+
+# Email warning if failed
+try:
+    send_email_with_pdf(pdf_path, score)
+    st.info(f"📧 Results emailed to {st.session_state.email}")
+except:
+    st.warning("⚠️ Email not sent. Check SMTP config.")
+
+# Restart Button
+if st.button("🔁 Restart Quiz"):
+    st.session_state.clear()
+    st.session_state.user_info_submitted = False
+    st.rerun()
 
     # CSV download
     import pandas as pd
