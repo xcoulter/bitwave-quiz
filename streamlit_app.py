@@ -243,7 +243,7 @@ if st.session_state.quiz_state['started']:
         st.session_state.quiz_state['completed'] = True
 
 # Quiz questions section
-elif not st.session_state.quiz_state['completed']:
+if st.session_state.quiz_state['started'] and not st.session_state.quiz_state['completed']:
     current_question = st.session_state.quiz_state['current_question']
     
     # Ensure we have valid quiz data
@@ -283,7 +283,7 @@ elif not st.session_state.quiz_state['completed']:
         st.rerun()
 
 # Quiz completion section
-else:
+if st.session_state.quiz_state['completed']:
     st.success("Quiz Completed!")
     st.write("Thank you for completing the quiz!")
     
