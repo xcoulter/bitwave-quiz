@@ -3,6 +3,10 @@
 import streamlit as st
 import json
 from datetime import datetime
+import re
+
+# Email validation regex pattern
+EMAIL_REGEX = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
 
 # Quiz data structure
 quiz_data = [
@@ -38,7 +42,13 @@ if 'quiz_state' not in st.session_state:
         'current_question': 0,
         'answers': [],
         'started': False,
-        'completed': False
+        'completed': False,
+        'user_info': {
+            'name': '',
+            'email': '',
+            'company': ''
+        },
+        'show_confirmation': False
     }
 
 # Page configuration
@@ -50,12 +60,49 @@ st.set_page_config(
 # Main app
 st.title("Bitwave Certification Quiz")
 
-# Quiz start section
+# User info collection section
 if not st.session_state.quiz_state['started']:
     st.write("Welcome to the Bitwave Certification Quiz!")
-    if st.button("Start Quiz"):
-        st.session_state.quiz_state['started'] = True
-        st.rerun()
+    
+    # Collect user information
+    with st.form("user_info_form"):
+        st.subheader("Please provide your information:")
+        
+        name = st.text_input("Full Name")
+        email = st.text_input("Email Address")
+        company = st.text_input("Company Name")
+        
+        if st.form_submit_button("Submit Information"):
+            # Validate all fields are filled
+            if not (name and email and company):
+                st.error("Please fill in all fields")
+            # Validate email format
+            elif not re.match(EMAIL_REGEX, email):
+                st.error("Please enter a valid email address")
+            else:
+                st.session_state.quiz_state['user_info'] = {
+                    'name': name,
+                    'email': email,
+                    'company': company
+                }
+                st.session_state.quiz_state['show_confirmation'] = True
+                st.rerun()
+    
+    # Confirmation dialog
+    if st.session_state.quiz_state['show_confirmation']:
+        with st.form("start_quiz_form"):
+            st.subheader("Quiz Information")
+            st.write(f"Name: {st.session_state.quiz_state['user_info']['name']}")
+            st.write(f"Email: {st.session_state.quiz_state['user_info']['email']}")
+            st.write(f"Company: {st.session_state.quiz_state['user_info']['company']}")
+            
+            if st.form_submit_button("Start Quiz"):
+                st.session_state.quiz_state['started'] = True
+                st.session_state.quiz_state['show_confirmation'] = False
+                st.rerun()
+            if st.form_submit_button("Edit Information"):
+                st.session_state.quiz_state['show_confirmation'] = False
+                st.rerun()
 
 # Quiz questions section
 elif not st.session_state.quiz_state['completed']:
