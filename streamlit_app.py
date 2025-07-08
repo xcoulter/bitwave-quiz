@@ -210,31 +210,3 @@ if not st.session_state.quiz_state['started']:
             can_attempt, message = check_attempts(email)
             if not can_attempt:
                 st.error(message)
-                st.stop()
-            
-            # Update session state and show confirmation
-            st.session_state.quiz_state['user_info'] = {
-                'name': name,
-                'email': email,
-                'company': company
-            }
-            st.session_state.quiz_state['show_confirmation'] = True
-            st.rerun()
-    
-    # Confirmation dialog
-    if st.session_state.quiz_state['show_confirmation']:
-        with st.form("start_quiz_form"):
-            st.subheader("Quiz Information")
-            st.write(f"Name: {st.session_state.quiz_state['user_info']['name']}")
-            st.write(f"Email: {st.session_state.quiz_state['user_info']['email']}")
-            st.write(f"Company: {st.session_state.quiz_state['user_info']['company']}")
-            
-            if st.form_submit_button("Start Quiz"):
-                # Update attempts when starting quiz
-                update_attempts(st.session_state.quiz_state['user_info']['email'])
-                st.session_state.quiz_state['started'] = True
-                st.session_state.quiz_state['show_confirmation'] = False
-                st.rerun()
-            if st.form_submit_button("Edit Information"):
-                st.session_state.quiz_state['show_confirmation'] = False
-                st.rerun()
