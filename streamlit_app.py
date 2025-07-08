@@ -6,6 +6,8 @@ from datetime import datetime
 import re
 import csv
 import os
+import time
+from streamlit_autorefresh import st_autorefresh
 
 # Email validation regex pattern
 EMAIL_REGEX = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
@@ -93,6 +95,43 @@ def update_attempts(email):
         writer.writerow(["email", "attempts", "last_attempt"])
         writer.writerows(attempts_data)
 
+# Function to generate CSV results
+def generate_results_csv(user_info, answers, quiz_data):
+    results = []
+    results.append(["Question Number", "Question", "Your Answer", "Correct Answer", "Result"])
+    
+    for i, question in enumerate(quiz_data):
+        user_answer = answers[i]
+        correct_answer = question['options'][question['correct'][0]] if question['type'] == "single" else [question['options'][idx] for idx in question['correct']]
+        
+        if question['type'] == "single":
+            result = "Correct" if user_answer == correct_answer else "Incorrect"
+        else:
+            result = "Correct" if set(user_answer) == set(correct_answer) else "Incorrect"
+        
+        results.append([
+            i + 1,
+            question['question'],
+            ", ".join(user_answer) if isinstance(user_answer, list) else user_answer,
+            ", ".join(correct_answer) if isinstance(correct_answer, list) else correct_answer,
+            result
+        ])
+    
+    # Add user info
+    results.insert(1, ["User Information", "", "", "", ""])
+    results.insert(2, ["Name", user_info['name'], "", "", ""])
+    results.insert(3, ["Email", user_info['email'], "", "", ""])
+    results.insert(4, ["Company", user_info['company'], "", "", ""])
+    results.insert(5, ["", "", "", "", ""])
+    
+    # Create CSV file
+    csv_filename = f"quiz_results_{user_info['email'].replace('@', '_')}.csv"
+    with open(csv_filename, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerows(results)
+    
+    return csv_filename
+
 # Initialize session state
 if 'quiz_state' not in st.session_state:
     st.session_state.quiz_state = {
@@ -105,7 +144,10 @@ if 'quiz_state' not in st.session_state:
             'email': '',
             'company': ''
         },
-        'show_confirmation': False
+        'show_confirmation': False,
+        'start_time': None,
+        'quiz_time_limit': 3600,  # 1 hour in seconds
+        'time_remaining': 3600
     }
 
 # Page configuration
@@ -116,6 +158,25 @@ st.set_page_config(
 
 # Main app
 st.title("Bitwave Certification Quiz")
+
+# Timer display
+if st.session_state.quiz_state['started']:
+    if st.session_state.quiz_state['start_time'] is None:
+        st.session_state.quiz_state['start_time'] = time.time()
+    
+    elapsed_time = time.time() - st.session_state.quiz_state['start_time']
+    st.session_state.quiz_state['time_remaining'] = max(0, st.session_state.quiz_state['quiz_time_limit'] - elapsed_time)
+    
+    # Convert to minutes and seconds
+    minutes = int(st.session_state.quiz_state['time_remaining'] // 60)
+    seconds = int(st.session_state.quiz_state['time_remaining'] % 60)
+    
+    st.sidebar.write("Time Remaining:")
+    st.sidebar.write(f"{minutes:02d}:{seconds:02d}")
+    
+    # Auto-submit if time runs out
+    if st.session_state.quiz_state['time_remaining'] <= 0:
+        st.session_state.quiz_state['completed'] = True
 
 # User info collection section
 if not st.session_state.quiz_state['started']:
@@ -149,65 +210,3 @@ if not st.session_state.quiz_state['started']:
                     }
                     st.session_state.quiz_state['show_confirmation'] = True
                     st.rerun()
-    
-    # Confirmation dialog
-    if st.session_state.quiz_state['show_confirmation']:
-        with st.form("start_quiz_form"):
-            st.subheader("Quiz Information")
-            st.write(f"Name: {st.session_state.quiz_state['user_info']['name']}")
-            st.write(f"Email: {st.session_state.quiz_state['user_info']['email']}")
-            st.write(f"Company: {st.session_state.quiz_state['user_info']['company']}")
-            
-            if st.form_submit_button("Start Quiz"):
-                # Update attempts when starting quiz
-                update_attempts(st.session_state.quiz_state['user_info']['email'])
-                st.session_state.quiz_state['started'] = True
-                st.session_state.quiz_state['show_confirmation'] = False
-                st.rerun()
-            if st.form_submit_button("Edit Information"):
-                st.session_state.quiz_state['show_confirmation'] = False
-                st.rerun()
-
-# Quiz questions section
-elif not st.session_state.quiz_state['completed']:
-    current_question = st.session_state.quiz_state['current_question']
-    
-    # Display current question
-    question = quiz_data[current_question]
-    st.subheader(f"Question {current_question + 1}")
-    st.write(question['question'])
-    
-    # Display options based on question type
-    if question['type'] == "single":
-        answer = st.radio(
-            "Select your answer",
-            question['options'],
-            key=f"q{current_question}"
-        )
-    else:  # multi-select
-        answer = st.multiselect(
-            "Select all that apply",
-            question['options'],
-            key=f"q{current_question}"
-        )
-    
-    # Next button
-    if st.button("Next"):
-        st.session_state.quiz_state['answers'].append(answer)
-        st.session_state.quiz_state['current_question'] += 1
-        
-        # Check if quiz is completed
-        if st.session_state.quiz_state['current_question'] >= len(quiz_data):
-            st.session_state.quiz_state['completed'] = True
-        st.rerun()
-
-# Quiz completion section
-else:
-    st.success("Quiz Completed!")
-    st.write("Thank you for completing the quiz!")
-    
-    # Calculate and display score
-    correct_answers = 0
-    for i, question in enumerate(quiz_data):
-        user_answer = st.session_state.quiz_state['answers'][i]
-        if question['type'] == "single":
