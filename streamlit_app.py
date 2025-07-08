@@ -171,7 +171,8 @@ if not st.session_state.quiz_state['started']:
         email = st.text_input("Email Address", key="email_input")
         company = st.text_input("Company Name", key="company_input")
         
-        if st.form_submit_button("Submit Information"):
+        submit_button = st.form_submit_button("Submit Information")
+        if submit_button:
             # Get the values from the form
             name = st.session_state.get("name_input", "")
             email = st.session_state.get("email_input", "")
@@ -208,4 +209,3 @@ if not st.session_state.quiz_state['started']:
             st.subheader("Quiz Information")
             st.write(f"Name: {st.session_state.quiz_state['user_info']['name']}")
             st.write(f"Email: {st.session_state.quiz_state['user_info']['email']}")
-            st.write(f"Company: {st.session_state.quiz_state['user_info']['company']}")
