@@ -186,27 +186,55 @@ if not st.session_state.quiz_state['started']:
     with st.form("user_info_form"):
         st.subheader("Please provide your information:")
         
-        name = st.text_input("Full Name")
-        email = st.text_input("Email Address")
-        company = st.text_input("Company Name")
+        name = st.text_input("Full Name", key="name_input")
+        email = st.text_input("Email Address", key="email_input")
+        company = st.text_input("Company Name", key="company_input")
         
         if st.form_submit_button("Submit Information"):
+            # Get the values from the form
+            name = st.session_state.get("name_input", "")
+            email = st.session_state.get("email_input", "")
+            company = st.session_state.get("company_input", "")
+            
             # Validate all fields are filled
             if not (name and email and company):
                 st.error("Please fill in all fields")
+                st.stop()
+            
             # Validate email format
-            elif not re.match(EMAIL_REGEX, email):
+            if not re.match(EMAIL_REGEX, email):
                 st.error("Please enter a valid email address")
-            else:
-                # Check attempts
-                can_attempt, message = check_attempts(email)
-                if not can_attempt:
-                    st.error(message)
-                else:
-                    st.session_state.quiz_state['user_info'] = {
-                        'name': name,
-                        'email': email,
-                        'company': company
-                    }
-                    st.session_state.quiz_state['show_confirmation'] = True
-                    st.rerun()
+                st.stop()
+            
+            # Check attempts
+            can_attempt, message = check_attempts(email)
+            if not can_attempt:
+                st.error(message)
+                st.stop()
+            
+            # Update session state and show confirmation
+            st.session_state.quiz_state['user_info'] = {
+                'name': name,
+                'email': email,
+                'company': company
+            }
+            st.session_state.quiz_state['show_confirmation'] = True
+            st.rerun()
+    
+    # Confirmation dialog
+    if st.session_state.quiz_state['show_confirmation']:
+        with st.form("start_quiz_form"):
+            st.subheader("Quiz Information")
+            st.write(f"Name: {st.session_state.quiz_state['user_info']['name']}")
+            st.write(f"Email: {st.session_state.quiz_state['user_info']['email']}")
+            st.write(f"Company: {st.session_state.quiz_state['user_info']['company']}")
+            
+            if st.form_submit_button("Start Quiz"):
+                # Update attempts when starting quiz
+                update_attempts(st.session_state.quiz_state['user_info']['email'])
+                st.session_state.quiz_state['started'] = True
+                st.session_state.quiz_state['show_confirmation'] = False
+                st.rerun()
+            if st.form_submit_button("Edit Information"):
+                st.session_state.quiz_state['show_confirmation'] = False
+                st.rerun()
