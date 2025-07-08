@@ -4,6 +4,8 @@ import streamlit as st
 import json
 from datetime import datetime
 import re
+import csv
+import os
 
 # Email validation regex pattern
 EMAIL_REGEX = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
@@ -35,6 +37,61 @@ quiz_data = [
     }
     # Add more questions as needed
 ]
+
+# Function to check attempts
+def check_attempts(email):
+    attempts_file = "attempts_log.csv"
+    max_attempts = 3
+    
+    # Create attempts file if it doesn't exist
+    if not os.path.exists(attempts_file):
+        with open(attempts_file, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(["email", "attempts", "last_attempt"])
+    
+    # Check attempts
+    with open(attempts_file, 'r') as f:
+        reader = csv.reader(f)
+        next(reader)  # Skip header
+        for row in reader:
+            if row[0] == email:
+                attempts = int(row[1])
+                if attempts >= max_attempts:
+                    return False, f"You have exceeded the maximum number of attempts ({max_attempts}). Please contact support@bitwave.io for assistance."
+                return True, f"You have {max_attempts - attempts} attempts remaining."
+    
+    return True, "You have 3 attempts remaining."
+
+# Function to update attempts
+def update_attempts(email):
+    attempts_file = "attempts_log.csv"
+    attempts = 1
+    
+    # Read existing attempts
+    attempts_data = []
+    if os.path.exists(attempts_file):
+        with open(attempts_file, 'r') as f:
+            reader = csv.reader(f)
+            next(reader)  # Skip header
+            attempts_data = list(reader)
+    
+    # Update or add new entry
+    found = False
+    for i, row in enumerate(attempts_data):
+        if row[0] == email:
+            attempts = int(row[1]) + 1
+            attempts_data[i] = [email, str(attempts), datetime.now().isoformat()]
+            found = True
+            break
+    
+    if not found:
+        attempts_data.append([email, "1", datetime.now().isoformat()])
+    
+    # Write back to file
+    with open(attempts_file, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(["email", "attempts", "last_attempt"])
+        writer.writerows(attempts_data)
 
 # Initialize session state
 if 'quiz_state' not in st.session_state:
@@ -80,13 +137,18 @@ if not st.session_state.quiz_state['started']:
             elif not re.match(EMAIL_REGEX, email):
                 st.error("Please enter a valid email address")
             else:
-                st.session_state.quiz_state['user_info'] = {
-                    'name': name,
-                    'email': email,
-                    'company': company
-                }
-                st.session_state.quiz_state['show_confirmation'] = True
-                st.rerun()
+                # Check attempts
+                can_attempt, message = check_attempts(email)
+                if not can_attempt:
+                    st.error(message)
+                else:
+                    st.session_state.quiz_state['user_info'] = {
+                        'name': name,
+                        'email': email,
+                        'company': company
+                    }
+                    st.session_state.quiz_state['show_confirmation'] = True
+                    st.rerun()
     
     # Confirmation dialog
     if st.session_state.quiz_state['show_confirmation']:
@@ -97,6 +159,8 @@ if not st.session_state.quiz_state['started']:
             st.write(f"Company: {st.session_state.quiz_state['user_info']['company']}")
             
             if st.form_submit_button("Start Quiz"):
+                # Update attempts when starting quiz
+                update_attempts(st.session_state.quiz_state['user_info']['email'])
                 st.session_state.quiz_state['started'] = True
                 st.session_state.quiz_state['show_confirmation'] = False
                 st.rerun()
@@ -147,20 +211,3 @@ else:
     for i, question in enumerate(quiz_data):
         user_answer = st.session_state.quiz_state['answers'][i]
         if question['type'] == "single":
-            if user_answer == question['options'][question['correct'][0]]:
-                correct_answers += 1
-        else:  # multi-select
-            correct_indices = set(question['correct'])
-            user_indices = {question['options'].index(a) for a in user_answer}
-            if correct_indices == user_indices:
-                correct_answers += 1
-    
-    score = (correct_answers / len(quiz_data)) * 100
-    st.write(f"Your score: {score:.1f}%")
-
-# Add timer display
-if st.session_state.quiz_state['started']:
-    st.sidebar.write("Time elapsed:")
-    start_time = st.session_state.quiz_state.get('start_time', datetime.now())
-    elapsed_time = datetime.now() - start_time
-    st.sidebar.write(f"{elapsed_time.seconds // 60} minutes {elapsed_time.seconds % 60} seconds")
