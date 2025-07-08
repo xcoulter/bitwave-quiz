@@ -173,10 +173,9 @@ if not st.session_state.quiz_state['started']:
         
         submit_button = st.form_submit_button("Submit Information")
         if submit_button:
-            # Get the values from the form
-            name = st.session_state.get("name_input", "")
-            email = st.session_state.get("email_input", "")
-            company = st.session_state.get("company_input", "")
+            name = st.session_state.name_input
+            email = st.session_state.email_input
+            company = st.session_state.company_input
             
             # Validate all fields are filled
             if not (name and email and company):
@@ -209,3 +208,162 @@ if not st.session_state.quiz_state['started']:
             st.subheader("Quiz Information")
             st.write(f"Name: {st.session_state.quiz_state['user_info']['name']}")
             st.write(f"Email: {st.session_state.quiz_state['user_info']['email']}")
+            st.write(f"Company: {st.session_state.quiz_state['user_info']['company']}")
+            
+            start_button = st.form_submit_button("Start Quiz")
+            edit_button = st.form_submit_button("Edit Information")
+            
+            if start_button:
+                # Update attempts when starting quiz
+                update_attempts(st.session_state.quiz_state['user_info']['email'])
+                st.session_state.quiz_state['started'] = True
+                st.session_state.quiz_state['show_confirmation'] = False
+                st.rerun()
+            elif edit_button:
+                st.session_state.quiz_state['show_confirmation'] = False
+                st.rerun()
+
+# Timer display
+if st.session_state.quiz_state['started']:
+    if st.session_state.quiz_state['start_time'] is None:
+        st.session_state.quiz_state['start_time'] = time.time()
+    
+    elapsed_time = time.time() - st.session_state.quiz_state['start_time']
+    st.session_state.quiz_state['time_remaining'] = max(0, st.session_state.quiz_state['quiz_time_limit'] - elapsed_time)
+    
+    # Convert to minutes and seconds
+    minutes = int(st.session_state.quiz_state['time_remaining'] // 60)
+    seconds = int(st.session_state.quiz_state['time_remaining'] % 60)
+    
+    st.sidebar.write("Time Remaining:")
+    st.sidebar.write(f"{minutes:02d}:{seconds:02d}")
+    
+    # Auto-submit if time runs out
+    if st.session_state.quiz_state['time_remaining'] <= 0:
+        st.session_state.quiz_state['completed'] = True
+
+# Quiz questions section
+elif not st.session_state.quiz_state['completed']:
+    current_question = st.session_state.quiz_state['current_question']
+    
+    # Ensure we have valid quiz data
+    if quiz_data and current_question < len(quiz_data):
+        question = quiz_data[current_question]
+        st.subheader(f"Question {current_question + 1}")
+        st.write(question['question'])
+        
+        # Display options based on question type
+        if question['type'] == "single":
+            answer = st.radio(
+                "Select your answer",
+                question['options'],
+                key=f"q{current_question}"
+            )
+        else:  # multi-select
+            answer = st.multiselect(
+                "Select all that apply",
+                question['options'],
+                key=f"q{current_question}"
+            )
+        
+        # Next button or Submit button based on current question
+        if current_question == len(quiz_data) - 1:
+            if st.button("Submit Quiz"):
+                st.session_state.quiz_state['answers'].append(answer)
+                st.session_state.quiz_state['completed'] = True
+                st.rerun()
+        else:
+            if st.button("Next Question"):
+                st.session_state.quiz_state['answers'].append(answer)
+                st.session_state.quiz_state['current_question'] += 1
+                st.rerun()
+    else:
+        st.error("No questions available or quiz is complete")
+        st.session_state.quiz_state['completed'] = True
+        st.rerun()
+
+# Quiz completion section
+else:
+    st.success("Quiz Completed!")
+    st.write("Thank you for completing the quiz!")
+    
+    # Calculate and display score
+    correct_answers = 0
+    for i, question in enumerate(quiz_data):
+        user_answer = st.session_state.quiz_state['answers'][i]
+        if question['type'] == "single":
+            if user_answer == question['options'][question['correct'][0]]:
+                correct_answers += 1
+        else:  # multi-select
+            correct_indices = set(question['correct'])
+            user_indices = {question['options'].index(a) for a in user_answer}
+            if correct_indices == user_indices:
+                correct_answers += 1
+    
+    score = (correct_answers / len(quiz_data)) * 100
+    st.write(f"Your score: {score:.1f}%")
+    
+    # Add CSV download button
+    if st.button("Download Quiz Results"):
+        csv_filename = generate_results_csv(
+            st.session_state.quiz_state['user_info'],
+            st.session_state.quiz_state['answers'],
+            quiz_data
+        )
+        with open(csv_filename, 'rb') as f:
+            st.download_button(
+                label="Download Results",
+                data=f,
+                file_name=csv_filename,
+                mime="text/csv"
+            )
+    if st.button("Start Quiz"):
+        st.session_state.quiz_state['started'] = True
+        st.rerun()
+
+# Quiz questions section
+elif not st.session_state.quiz_state['completed']:
+    current_question = st.session_state.quiz_state['current_question']
+    
+    # Display current question
+    question = quiz_data['questions'][current_question]
+    st.subheader(f"Question {current_question + 1}")
+    st.write(question['question'])
+    
+    # Radio button for answers
+    answer = st.radio(
+        "Select your answer",
+        question['options'],
+        key=f"q{current_question}"
+    )
+    
+    # Next button
+    if st.button("Next"):
+        st.session_state.quiz_state['answers'].append(answer)
+        st.session_state.quiz_state['current_question'] += 1
+        
+        # Check if quiz is completed
+        if st.session_state.quiz_state['current_question'] >= len(quiz_data['questions']):
+            st.session_state.quiz_state['completed'] = True
+        st.rerun()
+
+# Quiz completion section
+else:
+    st.success("Quiz Completed!")
+    st.write("Thank you for completing the quiz!")
+    
+    # Show results
+    correct_answers = 0
+    for i, question in enumerate(quiz_data['questions']):
+        if st.session_state.quiz_state['answers'][i] == question['options'][question['correct_answer']]:
+            correct_answers += 1
+    
+    score = (correct_answers / len(quiz_data['questions'])) * 100
+    st.write(f"Your score: {score:.1f}%")
+
+# Add timer display
+if st.session_state.quiz_state['started']:
+    st.sidebar.write("Time elapsed:")
+    start_time = st.session_state.quiz_state.get('start_time', datetime.now())
+    elapsed_time = datetime.now() - start_time
+    st.sidebar.write(f"{elapsed_time.seconds // 60} minutes {elapsed_time.seconds % 60} seconds")
